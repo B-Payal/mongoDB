@@ -26,4 +26,4 @@ COPY --from=builder --chown=appuser:appgroup /app ./
 EXPOSE 3000
 
 # Specify the command to run the application
-CMD ["node", "src/index.js"]
+CMD ["node", "scripts/index.js"]
