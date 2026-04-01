@@ -17,8 +17,7 @@ FROM node:18-alpine AS runner
 # Create a non-root user and set permissions (for security)
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 USER appuser
-WORKDIR /home/appuser/app # Set working directory for non-root user
-
+WORKDIR /home/appuser/app 
 # Copy only the necessary files from the builder stage
 COPY --from=builder --chown=appuser:appgroup /app/package*.json ./
 COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
