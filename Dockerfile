@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 # RUN npm run build
 
 
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
 
 # Create a non-root user and set permissions (for security)
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
