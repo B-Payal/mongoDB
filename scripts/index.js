@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const Song = require('../models/Song');
+const Book = require('../models/Book');
 
 const mongodbURI = process.env.MONGODB_URI;
 
@@ -45,6 +46,56 @@ app.get('/api/songs/:id' , async (req,res) =>{
         }
         res.status(500).json({ error: err.message });
         
+    }
+})
+
+app.post('/api/books' , async (req,res)=>{
+    try{
+    const {title , author , isbn , price, quantity} = req.body;
+    if(!title|| !author || !isbn || !price|| !quantity){
+        return res.status(400).json({error:err.message})
+
+
+    }
+    const newBook = new Book({
+        title:title.trim(),
+        author:author.trim(),
+        isbn:isbn.trim(),
+        price:price,
+        quantity:quantity
+
+    })
+    const saved = await newBook.save();
+     return res.status(201).json({
+      message: 'Book created successfully',
+      data: saved,
+    });}catch(error){
+        // 🔴 Duplicate ISBN
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: 'ISBN already exists',
+      });
+    }
+
+    // 🔴 Mongoose validation error
+    if (error.name === 'ValidationError') {
+      let errors = {};
+      for (let field in error.errors) {
+        errors[field] = error.errors[field].message;
+      }
+
+      return res.status(400).json({
+        message: 'Validation error',
+        errors,
+      });
+    }
+
+    console.log(error)
+    // 🔴 Unknown error
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+
     }
 })
 
